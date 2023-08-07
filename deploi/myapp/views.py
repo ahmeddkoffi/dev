@@ -67,7 +67,7 @@ def prediction(request):
         }
     )
     chart = fig.to_html()
-    context = {'chart': chart, 'form': DateForm()}
+    context = {'chart': chart, 'form': DateForm(),'y_pred':y_pred}
 
     return render(request, 'chart.html', context)
 
@@ -119,9 +119,19 @@ def update(request):
     data = {}
     return JsonResponse(data)
 
-def remove(request):
-    id = request.GET.get("id", None)
-    event = Events.objects.get(id=id)
-    event.delete()
-    data = {}
-    return JsonResponse(data)
+def remove_event(request):
+    if request.method == 'GET':
+        event_id = request.GET.get('id')
+
+        try:
+            event = Events.objects.get(id=event_id)
+            event.delete()
+
+            response_data = {'status': 'success', 'message': 'Event removed'}
+            return JsonResponse(response_data)
+        except Events.DoesNotExist:
+            response_data = {'status': 'error', 'message': 'Event not found'}
+            return JsonResponse(response_data, status=404)
+    else:
+        response_data = {'status': 'error', 'message': 'Method not allowed'}
+        return JsonResponse(response_data, status=405)
