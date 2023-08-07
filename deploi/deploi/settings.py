@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-bx^!#u70s3%2eu^h0td-%s!f)^jr(^3#dgx4juh1f32(*e@yoo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "ahmedd8koffi.pythonanywhere.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "ahmedd8koffi.pythonanywhere.com"]
 SESSION_COOKIE_SAMESITE = "None"
 
 # Application definition
@@ -85,3 +85,4 @@ MIDDLEWARE = [
 ]
 
 
+MODEL_FILE_PATH = os.path.join(BASE_DIR, "model_1.pkl")

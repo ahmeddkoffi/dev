@@ -6,6 +6,9 @@ from datatransform.transformfonct import calculate_std, new_data
 import pickle
 import plotly.express as px
 from myapp.forms import DateForm
+from django.conf import settings
+
+MODEL_FILE_PATH = settings.MODEL_FILE_PATH
 
 # Create your views here.
 def index(request): 
@@ -46,7 +49,7 @@ def prediction(request):
 
     df = pd.DataFrame(data, columns=['Date', 'Prix'])
     df = new_data(calculate_std(df))
-    model_file_path = r"C:\Users\LEGION\Documents\Stage 2A\model_1.pkl"
+    model_file_path = MODEL_FILE_PATH
     with open(model_file_path, 'rb') as file:
         loaded_model = pickle.load(file)
     df.drop('Date',axis=1, inplace=True)
