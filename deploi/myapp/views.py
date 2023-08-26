@@ -47,17 +47,18 @@ def prediction(request):
         price = event.price
         data.append([date_str, price])
 
-    df = pd.DataFrame(data, columns=['Date', 'Prix'])
-    df = new_data(calculate_std(df))
     model_file_path = MODEL_FILE_PATH
     with open(model_file_path, 'rb') as file:
         loaded_model = pickle.load(file)
-    df.drop('Date',axis=1, inplace=True)
-    y_pred = loaded_model.predict(df.iloc[[-1]])
+        
+    df = pd.DataFrame(data, columns=['Date', 'Prix'])
+    df = df.sort_values('Date')
         
     fig = px.line(
-        x=[c.start_date for c in events],
-        y=[c.price for c in events],
+        x=df['Date'],
+        y=df['Prix'],
+        #x=[c.start_date for c in events],
+        #y=[c.price for c in events],
         title="realized price plot",
         labels={'x': 'Date', 'y': 'observed price'}
     )
@@ -70,6 +71,9 @@ def prediction(request):
         }
     )
     chart = fig.to_html()
+    df = new_data(calculate_std(df))
+    df.drop('Date',axis=1, inplace=True)
+    y_pred = loaded_model.predict(df.iloc[[-1]])
     context = {'chart': chart, 'form': DateForm(),'y_pred':y_pred}
 
     return render(request, 'chart.html', context)
